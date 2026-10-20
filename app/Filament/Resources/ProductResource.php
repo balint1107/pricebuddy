@@ -8,7 +8,6 @@ use App\Filament\Resources\ProductResource\Actions\FetchBulkAction;
 use App\Filament\Resources\ProductResource\Actions\PauseBulkAction;
 use App\Filament\Resources\ProductResource\Actions\ResumeBulkAction;
 use App\Filament\Resources\ProductResource\Api\Transformers\ProductTransformer;
-use App\Filament\Resources\ProductResource\Columns\ProductCardColumn;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
 use App\Models\Tag;
@@ -22,16 +21,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Str;
-use Illuminate\View\ComponentAttributeBag;
 
 class ProductResource extends Resource
 {
@@ -285,46 +280,15 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordClasses('pb-products-record')
             ->columns([
-                Tables\Columns\Layout\Split::make([
-                    Tables\Columns\Layout\Split::make([
-                        Tables\Columns\ImageColumn::make('primary_image')
-                            ->width(60)
-                            ->height(60)
-                            ->extraImgAttributes([
-                                'class' => 'rounded-md p-1 bg-white mr-2',
-                                'onerror' => "this.onerror=null;this.src='/images/placeholder.png';",
-                            ])
-                            ->label('Image')
-                            ->url(fn ($record): string => $record->action_urls['view'])
-                            ->grow(false),
-
-                        Tables\Columns\Layout\Stack::make([
-                            TextColumn::make('title')
-                                ->searchable()
-                                ->formatStateUsing(fn ($state): HtmlString => new HtmlString('<span title="'.$state.'">'.Str::limit($state, 50).'</span>'))
-                                ->sortable()
-                                ->weight(FontWeight::Bold)
-                                ->extraAttributes(['class' => 'pr-4 min-w-40'])
-                                ->url(fn (Product $record): string => $record->action_urls['view']),
-
-                            Tables\Columns\ViewColumn::make('badges')
-                                ->view('components.product-badges')
-                                ->viewData(['attributes' => new ComponentAttributeBag(['class' => 'flex md:gap-3 flex-col md:flex-row'])]),
-
-                            TextColumn::make('tags')
-                                ->color(Color::Gray)
-                                ->formatStateUsing(fn ($record): string => $record->tags->pluck('name')->join(', '))
-                                ->label('Tags')
-                                ->url(null)
-                                ->grow(false)
-                                ->extraAttributes(['class' => 'mt-2 text-xs']),
-                        ]),
-                    ])->extraAttributes(['class' => 'max-w-md mb-2']),
-
-                    ProductCardColumn::make('product_card')
-                        ->label('Detail'),
-                ])->extraAttributes(['class' => 'w-full'])->from('sm'),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\ViewColumn::make('title')
+                        ->label('Title')
+                        ->searchable()
+                        ->sortable()
+                        ->view('filament.resources.product-resource.columns.game-row'),
+                ])->space(0)->extraAttributes(['class' => 'w-full']),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -358,9 +322,8 @@ class ProductResource extends Resource
             ])
             ->paginated(AdminPanelProvider::DEFAULT_PAGINATION)
             ->defaultSort('created_at', 'desc')
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+            // Edit and other per-product actions live inside the shared expandable row.
+            ->actions([])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     FetchBulkAction::make(),

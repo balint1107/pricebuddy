@@ -4,10 +4,10 @@
             <x-filament::icon :icon="$icon" class="h-5 w-5 text-gray-400 dark:text-gray-600" />
             {{ $heading }}
         </h3>
-        <div class="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
+        <div class="pb-game-rows">
             @foreach ($products as $product)
                 <div wire:key="{{ $sectionKey }}-{{ $product->id }}">
-                    <x-product-card :product="$product" />
+                    <x-product-card :product="$product" :row-key="$sectionKey.'-'.$product->id" />
                 </div>
             @endforeach
         </div>

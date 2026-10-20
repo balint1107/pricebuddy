@@ -53,7 +53,7 @@
 
                     <div
                         id="cat-grid-{{ $group['signature'] }}"
-                        @class(['fi-wi-stats-overview-stats-ctn grid gap-6 md:grid-cols-2 2xl:grid-cols-3', 'hidden' => $group['collapsed']])
+                        @class(['fi-wi-stats-overview-stats-ctn pb-game-rows', 'hidden' => $group['collapsed']])
                         data-category-signature="{{ $group['signature'] }}"
                         x-sortable
                         x-sortable-group="products"
@@ -65,7 +65,7 @@
                                 data-product-id="{{ $product->id }}"
                                 x-sortable-item="{{ $product->id }}"
                             >
-                                <x-product-card :product="$product" :draggable="true" />
+                                <x-product-card :product="$product" :draggable="true" :row-key="'group-'.$group['signature'].'-'.$product->id" />
                             </div>
                         @endforeach
                     </div>

@@ -23,7 +23,7 @@ class BaseAction extends Action
 
     public function resourceUrl(string $action, ?Model $record = null): self
     {
-        return $this->url(route(self::ROUTE_NAMESPACE.Str::pluralStudly($this->resourceName).'.'.$action, ($record ? ['record' => $record] : []), false));
+        return $this->url(route(self::ROUTE_NAMESPACE.Str::pluralStudly($this->resourceName).'.'.$action, ($record ? ['record' => $record] : []), true));
     }
 
     protected function setUp(): void

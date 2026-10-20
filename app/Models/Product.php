@@ -441,9 +441,9 @@ class Product extends Model
     {
         return $this->getKey()
             ? [
-                'edit' => route(BaseAction::ROUTE_NAMESPACE.'products.edit', $this, false),
-                'view' => route(BaseAction::ROUTE_NAMESPACE.'products.view', $this, false),
-                'fetch' => route(BaseAction::ROUTE_NAMESPACE.'products.fetch', $this, false),
+                'edit' => route(BaseAction::ROUTE_NAMESPACE.'products.edit', $this, true),
+                'view' => route(BaseAction::ROUTE_NAMESPACE.'products.view', $this, true),
+                'fetch' => route(BaseAction::ROUTE_NAMESPACE.'products.fetch', $this, true),
             ]
             : [];
     }
