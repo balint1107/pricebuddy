@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ScheduleHelper::registerSchedule($schedule);
     })
     ->withMiddleware(function (Middleware $middleware) use ($trustedProxies) {
+        // Verify central identity for all browser routes, including Livewire requests.
+        $middleware->web(append: [\App\Http\Middleware\AutheliaIdentity::class]);
+
         // Trust the reverse proxy so forwarded headers (notably
         // X-Forwarded-Proto) are honoured. Without this, requests behind an
         // SSL-terminating proxy are seen as plain HTTP and absolute URLs such
