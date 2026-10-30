@@ -2,7 +2,7 @@
     use App\Enums\Trend;
     /** @var \App\Models\Product $product */
     $latestPrice = $product->getPriceCache()->first();
-    $storeCount = $product->getPriceCache()->count();
+    $storeCount = $product->urls->pluck('store_id')->filter()->unique()->count();
     $rowKey = $attributes->get('row-key', 'product-'.$product->id);
     $detailsId = 'game-row-details-'.md5($rowKey);
 @endphp
@@ -27,6 +27,7 @@
     .dark .pb-game-row__meta, .dark .pb-game-row__store { color: #94a3b8; }
     .pb-game-row__price { text-align: right; font-variant-numeric: tabular-nums; }
     .pb-game-row__amount { font-size: 21px; font-weight: 650; line-height: 1.2; white-space: nowrap; }
+    .pb-game-row__amount.pb-game-row__amount--status { font-size: 12px; white-space: normal; }
     .pb-game-row__history { min-width: 0; width: 100%; }
     .pb-game-row__history-label { display: block; margin-bottom: 3px; font-size: 10px; color: #64748b; }
     .dark .pb-game-row__history-label { color: #94a3b8; }
@@ -73,8 +74,8 @@
             </div>
         </a>
         <div class="pb-game-row__price">
-            <div class="pb-game-row__amount">
-                {{ $latestPrice?->hasVisiblePrice() ? $latestPrice->getUnitPriceFormatted() : __('Unavailable') }}
+            <div @class(['pb-game-row__amount', 'pb-game-row__amount--status' => !$latestPrice?->hasVisiblePrice()])>
+                {{ $latestPrice?->hasVisiblePrice() ? $latestPrice->getUnitPriceFormatted() : ($latestPrice ? $latestPrice->getStockStatusLabel() : __('No price yet')) }}
             </div>
             @if ($latestPrice)
                 <div class="pb-game-row__store">{{ $latestPrice->getStoreName() }}</div>

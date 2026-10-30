@@ -38,3 +38,14 @@ and reset, bulk-menu availability without executing mutations, 25/50 page-size
 selection, row expansion/keyboard collapse and generated service-prefixed links.
 Desktop and 390px mobile rows render at 80px without horizontal overflow. PHP
 syntax and Blade compilation also pass.
+
+## Store counts
+
+Rows count distinct configured stores from product URLs, including listings that
+have not returned their first price yet. A pending initial check must not make a
+configured listing appear to be missing.
+
+Rows without any price/stock reading show `No price yet`; a confirmed unavailable
+listing without a price shows its actual stock label. Missing initial readings
+must not be presented as confirmed unavailability. Status text wraps within the
+price column on narrow screens.
